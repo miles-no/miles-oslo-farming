@@ -6,11 +6,11 @@ Welcome to Miles Oslo's IoT greenhouse project. This project is still a work in 
 
 This project is based of the PlatformIO plugin in VS Code. To get quickly up and running download VS Code and install PlatformIO from the extensions tab.
 
-![alt text](https://platformio.org/images/platformio-ide-laptop.93fc8e69.png "https://platformio.org/")
+![alt text](assets/platformio-ide-laptop.93fc8e69.png "https://platformio.org/")
 
 For this project we are using the NodeMCUv2 board. To be able to communicate with the board, you will need to install a set of drivers.
 
-![alt text](https://hackster.imgix.net/uploads/attachments/412887/nodemcu_pins_vu9lHEKurX.png "NodeMCUv2")
+![alt text](assets/nodemcu_pins_vu9lHEKurX.png "NodeMCUv2")
 
 [USB to UART Driver](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers)
 
