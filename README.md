@@ -1,82 +1,40 @@
+Hi there,
 
-#include <Adafruit_Sensor.h>
-#include <DHT.h>
-#include <DHT_U.h>
-#include <ESP8266WiFi.h>
-#include <BlynkSimpleEsp8266.h>
+Welcome to Miles Oslo's IoT greenhouse project. This project is still a work in progress and is be no means close to being finished. We'll try to keep the diagrams updated as we go, so you can follow the progress more easily. 
 
-// Moisture
-#define MOISTPIN 0
+## Tooling/Prerequisites
 
-// DHT
-#define DHTPIN 2    
-#define DHTTYPE    DHT11
-DHT_Unified dht(DHTPIN, DHTTYPE);
+This project is based of the PlatformIO plugin in VS Code. To get quickly up and running download VS Code and install PlatformIO from the extensions tab.
 
-//Blynk
-#define BLYNK_PRINT Serial
-char auth[] = "c2e366785e3b45d98c5daf0caaf93b73";
-BlynkTimer timer;
+![alt text](https://platformio.org/images/platformio-ide-laptop.93fc8e69.png "https://platformio.org/")
 
-//WIFI
-char ssid[] = "<ssid>";
-char pass[] = "<password>";
+For this project we are using the NodeMCUv2 board. To be able to communicate with the board, you will need to install a set of drivers.
 
-void sendSensorData() {
-  // Get temperature event and print its value.
-  sensors_event_t event;
-  dht.temperature().getEvent(&event);
+![alt text](https://hackster.imgix.net/uploads/attachments/412887/nodemcu_pins_vu9lHEKurX.png "NodeMCUv2")
 
-  float temperature = 0;
-  float humidity = 0;
-  
-  if (isnan(event.temperature)) {
-    Serial.println(F("Error reading temperature!"));
-  }
-  else {
-    temperature = event.temperature;
-    Serial.print(F("Temperature: "));
-    Serial.print(temperature);
-    Serial.println(F("°C"));
+[USB to UART Driver](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers)
 
-  }
+That should be it really, we have added all our dependencies to the platformio.ini file and they should be automatically downloaded once the project gets built.
 
-  // Get humidity event and print its value.
-  dht.humidity().getEvent(&event);
-  if (isnan(event.relative_humidity)) {
-    Serial.println(F("Error reading humidity!"));
-  }
-  else {
-    humidity = event.relative_humidity;
-    Serial.print(F("Humidity: "));
-    Serial.print(humidity);
-    Serial.println(F("%"));
-  }
+## Wiring
 
-  Serial.print("Soil moisture: ");
-  float soil= analogRead(MOISTPIN);
-  Serial.println(soil);
-  
-  if(soil > 500) {
-    Blynk.virtualWrite(V4, HIGH);
-  } else {
-    Blynk.virtualWrite(V4, LOW);
-  }
+Bellow you will find how to wire up the DHT- and soil moisture-sensor. We have utilized D0 for the DHT input data and A0 for the soil moisture.
 
-  Blynk.virtualWrite(V5, temperature);
-  Blynk.virtualWrite(V6, humidity);
-}
+![alt text](diagrams/farming.png "diagram")
 
-void setup() {
-  Serial.begin(9600);
-  // Initialize device.
-  Blynk.begin(auth, ssid, pass);
-  dht.begin();
+## Source files
 
-  timer.setInterval(1000L, sendSensorData);
-}
+You fill find the source code under [src/main.cpp](src/main.cpp)
 
-void loop() {
-  Blynk.run();
-  timer.run();
-}
+All diagrams are made using Fritzing. The Fritzing files and parts can be found under [diagrams](diagrams)
+
+## Blynk/WIFI
+
+We are currently using Blynk for means of visualizing the output from the various sensors. To utilize this you will need to download the Blynk app on your phone and create a profile and a project. After you have created your project; input the token received into the <code>blynk_token</code> variable.
+
+Blynk needs access to the interwebz to upload data, and since the NodeMCU ships with a built in wifi-contoller, all you need to do is input ssid/pass into the <code>ssid</code> & <code>pass</code> variables.
+
+The various outputs can also be read through PlatformIOs <code>Serial Monitor</code> for easier debugging.
+
+
+![alt text](assets/state-of-things.jpg "Farming")
