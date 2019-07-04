@@ -1,26 +1,30 @@
-
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
 #include <ESP8266WiFi.h>
 #include <BlynkSimpleEsp8266.h>
 
-// Moisture
+// Moisture Configuration
 #define MOISTPIN 0
 
-// DHT
+// DHT Configuration
 #define DHTPIN 2    
 #define DHTTYPE    DHT11
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
 //Blynk
 #define BLYNK_PRINT Serial
-char auth[] = "c2e366785e3b45d98c5daf0caaf93b73";
 BlynkTimer timer;
 
-//WIFI
-char ssid[] = "<ssid>";
-char pass[] = "<password>";
+// You should get Auth Token in the Blynk App.
+// Go to the Project Settings (nut icon).
+char blynk_token[] = "YourAuthToken";
+
+// Your WiFi credentials.
+// Set password to "" for open networks.
+char ssid[] = "YourNetworkName";
+char pass[] = "YourPassword";
+
 
 void sendSensorData() {
   // Get temperature event and print its value.
@@ -63,15 +67,23 @@ void sendSensorData() {
     Blynk.virtualWrite(V4, LOW);
   }
 
+  Serial.print("Light? ");
+  int light = digitalRead(D2);
+  Serial.println(light);
+
+
   Blynk.virtualWrite(V5, temperature);
   Blynk.virtualWrite(V6, humidity);
 }
 
 void setup() {
   Serial.begin(9600);
+
   // Initialize device.
-  Blynk.begin(auth, ssid, pass);
+  Blynk.begin(blynk_token, ssid, pass);
   dht.begin();
+
+  pinMode(D2, INPUT);
 
   timer.setInterval(1000L, sendSensorData);
 }
